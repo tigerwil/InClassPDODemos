@@ -8,6 +8,5 @@
     }else{
         //user is not logged in 
         include 'templates/membersonly.php';
-    }  
-    
+    }     
     include 'includes/footer.php';
