@@ -1,0 +1,5 @@
+#Allow rules are processed before the Deny rules
+#Deny any access
+#http://httpd.apache.org/docs/2.2/mod/mod_authz_host.html#order
+Order Allow,Deny 
+Deny from all
