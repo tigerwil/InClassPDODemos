@@ -49,7 +49,7 @@
                 //registered user is logged in
             ?>  
                 <a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i> My Account</a>
-                <a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>  
+                <a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>  
             <?php
             
             }else{

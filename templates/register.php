@@ -97,29 +97,49 @@
                     //echo $active;
                     //exit();
                     
+                    //prepare the statement
                     $stmt = $dbc->prepare("INSERT INTO users(email,pass,first_name,last_name,date_expires,active)
                                            VALUES(:email,:pass,:fname,:lname,SUBDATE(NOW(), INTERVAL 1 DAY),:active)");
                 
+                    //bind the params
                      $stmt->bindValue(':email',$email,PDO::PARAM_STR);
                      $stmt->bindValue(':pass',$salted_password,PDO::PARAM_STR);
-                     $stmt->bindValue(':email',$email,PDO::PARAM_STR);
-                    //============== send activation email ===============
-                
-                
-                    //=================== mail success ===================
-                    echo '<div class="alert alert-success"><strong>Account Registered</strong>
-                            <p>A confirmation email has been sent to your email address.  
-                                Please click on the link in that email in order to activate 
-                                your account.
-                            </p>
-                          </div>';
-                    
-                    //=================== mail failure ===================
-                
-                //finish page:  hide form
-                echo '</div>';
-                include './includes/footer.php'; //footer
-                exit();  
+                     $stmt->bindValue(':fname',$first_name,PDO::PARAM_STR);
+                     $stmt->bindValue(':lname',$last_name,PDO::PARAM_STR);
+                     $stmt->bindValue(':active',$active,PDO::PARAM_STR);
+                     
+                     
+                     //execute the statement
+                     $result = $stmt->execute();
+                     
+                     if($result){
+                         //true - successfully inserted a new user
+                         
+                          //============== send activation email ===============
+                         
+                          //=================== mail success ===================
+                            echo '<div class="alert alert-success"><strong>Account Registered</strong>
+                                <p>A confirmation email has been sent to your email address.  
+                                    Please click on the link in that email in order to activate 
+                                    your account.
+                                </p>
+                              </div>';
+                        
+                        //=================== mail failure ===================
+                            
+                     }else{
+                         //false - failure to insert a new user
+                         echo '<div class="alert alert-danger"><strong>Registration Failed</strong>
+                                <p>A server error has occured and your account has not been 
+                                   registered!
+                                </p>
+                              </div>';
+                     }
+                     
+                    //finish page:  hide form
+                    echo '</div>';
+                    include './includes/footer.php'; //footer
+                    exit();  
                 
                 
                 }else{
