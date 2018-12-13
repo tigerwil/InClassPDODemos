@@ -4,47 +4,104 @@
         if($_POST){
             //FORM HAS BEEN POSTED - CHECK LOGIN CREDENTIALS
             
-            $success = true;  //testing purposes only
+            //get post params
+            $email = $_POST['email'];
+            $password = $_POST['password'];
             
-            if($success){
-                //Login success
-                //For testing only - fictional user 
-                $_SESSION['user_id'] = 1; //pretend user id 1 is logged in 
-                $_SESSION['user_not_expired'] = true;  //pretend user account is valid
+            //Attempt login
+            $stmt = $dbc->prepare("SELECT COUNT(*) FROM users 
+                                   WHERE email = :email");
+            $stmt->bindValue(':email', $email,PDO::PARAM_STR);
+            $stmt->execute();
+            $num_rows = $stmt->fetchColumn();
+            
+            if($num_rows==1){
+                //valid email - test password
+                //echo "valid email";
+                //Test actual login email + password pairing
+                $stmt = $dbc->prepare("SELECT pass from users 
+                                       WHERE email = :email");
+                $stmt->bindValue(':email', $email,PDO::PARAM_STR);
+                $stmt->execute();
+                $row= $stmt->fetchColumn();
                 
-                $_SESSION['admin']= true;  //pretend the admin user is logged in
+                //var_dump($row);
+                //exit();
                 
-                // show success and redirect user back to home page (countdown)
-                //header('Location: index.php');     
-                 echo '<div class="alert alert-success" role="alert">
-                       <strong>Login Success<strong>!
-                       <p>You will be rediredted to the home page in <span id="count"></span> seconds...</p>
-                      </div>'; 
+                if(password_verify($password, $row)){
+                    //Password is valid - return that user's information
+                    //prepare the statement
+                    $stmt = $dbc->prepare("SELECT id, type, email, first_name, last_name,
+                                                  IF(date_expires>=NOW(),true,false) as notexpired,
+                                                  IF(type='admin',true,false) as admin
+                                           FROM users
+                                           WHERE email = :email");
+                    //bind the query parameters
+                    $stmt->bindValue(':email',$email,PDO::PARAM_STR);
+                    //execute the query
+                    $stmt->execute();
+                    //fetch our row 
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    //var_dump($user);
+                    //exit();
+                    
+                    //Populate the SESSION object with user info
+                    $_SESSION['user_id'] = $user['id']; //who is this user
+                    $_SESSION['user_not_expired'] = $user['notexpired']; //is account expired or not                     
+                    $_SESSION['fullname'] = $user['first_name'].' '. $user['last_name']; //user fullname
+                    $_SESSION['admin']= $user['admin'];  // is the user a member or admin
+                    
+                    echo '<div class="alert alert-success" role="alert">
+                              <strong>Login Success<strong>!
+                              <p>You will be rediredted to the home page in <span id="count"></span> seconds...</p>
+                          </div>'; 
                 
-                 echo "<script>
-                           var delay = 3;
-                           var url = 'index.php';
-                           function countdown(){
-                                setTimeout(countdown,1000);
-                                $('#count').html(delay);
-                                delay --;
-                                if(delay <0){
-                                    window.location = url;
-                                    delay = 0;
-                                }
-                            }
-                            countdown();
-                        </script>";
+                    echo "<script>
+                              var delay = 3;
+                              var url = 'index.php';
+                              function countdown(){
+                                   setTimeout(countdown,1000);
+                                   $('#count').html(delay);
+                                   delay --;
+                                   if(delay <0){
+                                       window.location = url;
+                                       delay = 0;
+                                   }
+                               }
+                               countdown();
+                           </script>";
+                    
+                    //finish the page
+                    echo "</div>";//for container
+                    include './includes/footer.php';//footer
+                    exit();
+                    
+                    
+                }else{
+                    //invalid password - show alert';
+                    echo '<div class="alert alert-danger" role="alert">
+                              <strong>Login Failed<strong>!
+                              <p>Invalid credentials entered, please try again.</p>
+                         </div>';
+                }//end of password verify
+                        
+    
                 
             }else{
-                //login failure - show alert message
+                //invalid email - show message
+                //echo "invalid email";
                 echo '<div class="alert alert-danger" role="alert">
                        <strong>Login Failed<strong>!
                        <p>Invalid credentials entered, please try again.</p>
                       </div>';
-                
-            }
-        }
+            }//end of email check
+            
+           
+            
+            
+
+            
+        }//end if post
     
     ?>
     
