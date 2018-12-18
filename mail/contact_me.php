@@ -22,6 +22,7 @@ $email_subject = "Website Contact Form:  $name";
 $email_htmlbody = "<p>You have received a new message from your website contact form.</p><p>Here are the details:</p>Name: $name<br>Email: $email_address<br>Phone: $phone<br>Message:<br>$message";
 $email_textbody = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nPhone: $phone\n\nMessage:\n$message";
 
+require '../vendor/autoload.php';
 require './sendmail.php';
 
 $mail = new sendMail('knowledge@programming.oultoncollege.com','InClassDemo', 
