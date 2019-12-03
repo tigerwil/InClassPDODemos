@@ -38,12 +38,12 @@
         </a>
       </div>
     </header>
-    <div class="container">
+    <div class="container-fluid">
       <h1 class="my-4">Welcome to Knowledge Is Power</h1>
       <?php
         //1.  Build the query:  return 3 random pages
         $q="SELECT id, title, description FROM pages  
-            ORDER BY RAND() LIMIT 3";
+            ORDER BY RAND() LIMIT 4";
       
          //2.  Execute the query (remember, we are using PDO, not MYSQLI)
         $stmt = $dbc->query($q);
@@ -52,7 +52,7 @@
         //3.  Loop to create the bootstrap cards
          echo "<div class='row'>";
         foreach($articles as $row){
-            echo "<div class='col-lg-4 mb-4'>
+            echo "<div class='col-lg-3 mb-4'>
                     <div class='card h-100'>
                       <h4 class='card-header'>{$row['title']}</h4>
                       <div class='card-body'>

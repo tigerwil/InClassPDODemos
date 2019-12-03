@@ -18,7 +18,23 @@
                 <p>The page you're looking for could not be found. 
                     Here are some helpful links to get you back on track:
                 </p>    
-        </div>
+        
+        <?php
+            $files = glob("./{*.php}", GLOB_BRACE);
+            //var_dump($files);
+
+            $exclude = array('./403.php', './404.php', './activate.php');
+
+            echo "<ul>";
+            foreach($files as $file){ //only get the value 
+                if(! in_array($file, $exclude)){
+                    //echo basename($file).'<br>';
+                    echo "<li><a href='". basename($file)."'>". basename($file). "</a></li>";
+                }                
+            }
+            echo "</ul>";
+        ?>
+    </div>
 </div>
 <?php
     
