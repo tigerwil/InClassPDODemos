@@ -3,7 +3,8 @@
     <?php
         if($_POST){
             //FORM HAS BEEN POSTED - CHECK LOGIN CREDENTIALS
-            
+            //var_dump($_POST);
+            //exit();
             //get post params
             $email = $_POST['email'];
             $password = $_POST['password'];

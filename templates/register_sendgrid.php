@@ -111,7 +111,6 @@
                      
                      //execute the statement
                      $result = $stmt->execute();
-                     //$result = true;
                      
                      if($result){
                         // User successfully inserted in database
@@ -119,41 +118,39 @@
                         //3.============== send activation email ===============
                         //3.1.  Prepare to send email
                         $siteURL = "http://localhost:8888/InClassPDODemos/activate.php?x=" . urlencode($email) . "&y=$active";
-                        $replyToEmail = 'knowledge@programming.oultoncollege.com';
-                        $replyToName = 'Knowledge Is Power';
                         $mailSubject = 'Knowledge Is Power Registration';
-                        $messageTEXT = "Thank you for registering at Knowledge Is Power.\n\n
+                        $messageHTML="<p><strong>Thank you for registering at Knowledge is Power.</strong></p> 
+                                        <p>To activate your account, please click on this link:</p>
+                                        <a href='$siteURL'>Activate our Account</a>";
+                        $messageText = "Thank you for registering at Knowledge Is Power.\n\n
                                             To activate your account please click on this link:  ". $siteURL;
-                        $messageHTML = "<p><strong>Thank you for registering at Knowledge is Power.</strong></p> 
-                                            <p>To activate your account, please click on this link:</p>
-                                            <a href='$siteURL'>Activate our Account</a>";
-
-
-                        $fromEmail = 'knowledge@programming.oultoncollege.com';
-                        $fromName = 'Knowledge Is Power';
+                        $fromEmail =  "mwilliams@oultoncollege.com" ;                          
+                        $fromName = "Marc Williams";
                         $toEmail = $email;
                         $toName = $firstname . ' ' . $lastname;
-                        require './vendor/autoload.php';
-                        require './mail/sendmail.php';
-                        $mail = new sendMail($replyToEmail, $replyToName, $mailSubject, $messageHTML, $messageTEXT, $fromEmail, $fromName, $toEmail, $toName);
-                        $mailResult = $mail->SendMail();
+
+
+                        //get mail function
+                        require './mail/sendGridMail.php';
                         
-                        if ($mailResult) {
-                        //=================== mail success ===================
-                        echo '<div class="alert alert-success"><strong>Account Registered</strong>
-                                <p>A confirmation email has been sent to your email address.  
-                                    Please click on the link in that email in order to activate 
-                                    your account.
-                                </p>
-                              </div>';
+                        //send it
+                        $response = sendMail($mailSubject,$messageHTML,$messageText,$fromEmail,$fromName,$toEmail,$toName);
+                        
+                        if($response->statusCode()===202){
+                            //=================== mail success ===================
+                            echo '<div class="alert alert-success"><strong>Account Registered</strong>
+                                    <p>A confirmation email has been sent to your email address.  
+                                        Please click on the link in that email in order to activate 
+                                        your account.
+                                    </p>
+                                  </div>';
                         }else{
-                           //=================== mail failure =================== 
+                            //=================== mail failure =================== 
                             echo '<div class="alert alert-success"><strong>Account Registered</strong>
                                 <p>Warning:  There was a problem sending a confirmation email to the following email: <strong>' .
                                 $email . '</strong>.</p> <p>Please contact customer support!</p>                                 
-                              </div>';                            
-                        }
-                                              
+                              </div>';    
+                        }                                             
   
                      }else{
                          //false - failure to insert a new user

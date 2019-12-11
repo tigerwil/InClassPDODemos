@@ -16,9 +16,11 @@
     <script src="js/main.js"></script>   
     
     <?php
-        $current_page = $_SERVER['REQUEST_URI'];
-        //echo $current_page;
-        if($current_page=='/InClassPDODemos/contact.php'){
+        $current_page = trim($_SERVER['REQUEST_URI']);
+        //echo basename($current_page);
+        // if($current_page=='inclasspdodemos/contact.php'){
+        if(strtolower(basename($current_page))=='contact.php'){
+        
             
     ?>
     <!-- Contact form JavaScript -->

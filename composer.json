@@ -8,6 +8,6 @@
         }
     ],
     "require": {
-        "phpmailer/phpmailer": "v6.0.6"
+        "sendgrid/sendgrid": "^7.3"
     }
 }
